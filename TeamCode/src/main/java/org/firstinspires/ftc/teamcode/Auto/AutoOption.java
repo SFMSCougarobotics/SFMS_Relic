@@ -24,7 +24,7 @@ public class AutoOption extends AbstractCougarRobot {
             }
             if (gamepad1.y) {
                 isFront = ! isFront;
-                while(gamepad1.a) {
+                while(gamepad1.y) {
                     //wait here for the button to be released
                     telemetry.addData("Alliance (a)", isFront ? "BLUE" : "RED");
                     telemetry.update();

@@ -20,20 +20,12 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
     public double TURN_SPEED    = 0.5;
     public double jtdown = 0.57;
     public double jtup = 0.0;
-    public double flipfront = 0.7;
-    public double flipback = 1;
-    public double flipcenter = 0.9;
+    public double swipefront = 0.7;
+    public double swipeback = 1;
+    public double swipecenter = 0.9;
     public boolean isRed = false;
     public boolean isFront = false;
 
-    public void touched1IsBlue() {
-        if(getTouch1()) {
-            isRed=false;
-        } else {
-            isRed=true;
-        }
-    }
-    
     public void lowerJewelTool() {
         robot.jt.setPosition(jtdown);
     }
@@ -42,8 +34,8 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
         robot.jt.setPosition(jtup);
     }
     
-    public void flipCenter() {
-        robot.flip.setPosition(flipcenter);
+    public void swipeCenter() {
+        robot.swipe.setPosition(swipecenter);
     }
     
     public boolean seeBlue() {
@@ -70,36 +62,36 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
         }
     }
     
-    public void flipOpponentColor() {
+    public void swipeOpponentColor() {
         //touched1IsBlue();
         if(isRed) {
             if(seeBlue()) {
-                flipFront();
+                swipeFront();
             } else {
-                flipBack();
+                swipeBack();
             }
         } else {
             if(seeBlue()) {
-                flipBack();
+                swipeBack();
             } else {
-                flipFront();
+                swipeFront();
             }
         }
     }
     
-    public void flipBack() {
+    public void swipeBack() {
         if(opModeIsActive()) {
-            robot.flip.setPosition(flipback);
+            robot.swipe.setPosition(swipeback);
             pause(1);
-            robot.flip.setPosition(flipcenter);
+            robot.swipe.setPosition(swipecenter);
         }
     }
     
-    public void flipFront() {
+    public void swipeFront() {
         if(opModeIsActive()) {
-            robot.flip.setPosition(flipfront);
+            robot.swipe.setPosition(swipefront);
             pause(1);
-            robot.flip.setPosition(flipcenter);
+            robot.swipe.setPosition(swipecenter);
         }
     }
     

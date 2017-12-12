@@ -20,14 +20,8 @@ public class RobotProgram5498 extends OpMode{
 
     /* Declare OpMode members. */
         
-        double left;
-        double right;
-        boolean dpad_left;
-        boolean dpad_right;
-        boolean dpad_down;
-        boolean dpad_up;
-        boolean dpad2_down;
-        boolean dpad2_up;
+
+
         public double m_1 = 0;
         double m_0 = 0;
         double m_2 = 0;
@@ -72,7 +66,7 @@ public class RobotProgram5498 extends OpMode{
         robot.motorA1.setPower(m_4);
         robot.motorA2.setPower(m_5);
         robot.jt.setPosition(ds_0);
-        robot.flip.setPosition(ds_1);
+        robot.swipe.setPosition(ds_1);
     }
     
     /*
@@ -89,23 +83,22 @@ public class RobotProgram5498 extends OpMode{
     @Override
     public void loop() {
 
-        // Run intake pulley wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
+
         
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
+
         
-        if (gamepad2.y) {
-            robot.flip.setPosition(0.6);
+        if (gamepad2.x) {
+            robot.swipe.setPosition(0.6);
         } else if (gamepad2.a) {
-            robot.flip.setPosition(0);
+            robot.swipe.setPosition(0);
         }
-        
-        if (gamepad2.left_trigger > 0.1f) {
-           m_4 = gamepad2.left_trigger;
-           m_5 = gamepad2.left_trigger;
+        // Run intake pulley wheels on left controller 2 stick
+        if (gamepad2.left_stick_y > 0.1f) {
+           m_4 = -gamepad2.left_stick_y;
+           m_5 = -gamepad2.left_stick_y;
         } else if (gamepad2.right_trigger > 0.1f) {
-            m_4 = -gamepad2.left_trigger;
-            m_5 = -gamepad2.left_trigger;
+            m_4 = gamepad2.left_stick_y;
+            m_5 = gamepad2.left_stick_y;
         }
         
         //-gamepad2.right_trigger*2
@@ -113,7 +106,7 @@ public class RobotProgram5498 extends OpMode{
         //left bumper power reduction
         if (gamepad1.left_bumper) {
            slowfactor = 4;
-        } else if (!gamepad1.right_bumper) {
+        } else if (!gamepad1.left_bumper) {
             slowfactor = 1;
         }
         //right bumper reverse control
@@ -130,6 +123,11 @@ public class RobotProgram5498 extends OpMode{
             if (rev < -2){
                 rev = 1;
             }
+        }
+        if(gamepad2.y) {
+            robot.flipUp();
+        } else {
+            robot.flipDown();
         }
 
         // dpad control for mecanum wheel drive

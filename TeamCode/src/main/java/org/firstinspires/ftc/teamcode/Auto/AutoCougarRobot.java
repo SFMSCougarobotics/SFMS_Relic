@@ -9,11 +9,11 @@ public class AutoCougarRobot {
         
         o.strafeLeft(30);
         o.pause(5);
-        o.flipCenter();
+        o.swipeCenter();
         o.pause(3);
         o.lowerJewelTool();
         o.pause(3);
-        o.flipOpponentColor();
+        o.swipeOpponentColor();
         //o.flipFront();
         //o.pause(3);
         //o.flipBack();

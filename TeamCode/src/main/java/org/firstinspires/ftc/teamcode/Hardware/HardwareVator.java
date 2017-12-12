@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 public class HardwareVator
 {
@@ -20,13 +22,30 @@ public class HardwareVator
     public DcMotor  motorA1 = null;
     public DcMotor  motorA2 = null;
     public Servo jt  = null;
-    public Servo flip  = null;
-    //public Servo    servo2 = null;
-    //public Servo    servo3 = null;
+    public Servo swipe  = null;
+    public Servo    flipRight = null;
+    public Servo    flipLeft = null;
     public ColorSensor sensorColor = null;
     public DistanceSensor sensorDistance = null;
     public DigitalChannel touch1 = null;
     public DigitalChannel touch2 = null;
+    double flipRightDown = 0.0;
+    double flipRightUp = 0.65;
+    double flipLeftDown = 1.0;
+    double flipLeftUp = 0.35;
+    double flipRightPos = flipRightDown;
+    double flipLeftPos = flipLeftDown;
+    public ElapsedTime runtime = new ElapsedTime();
+    public double FORWARD_SPEED = 0.4;
+    public double TURN_SPEED    = 0.5;
+    public double jtdown = 0.57;
+    public double jtup = 0.0;
+    public double swipefront = 0.7;
+    public double swipeback = 1;
+    public double swipecenter = 0.9;
+    public boolean isRed = false;
+    public boolean isFront = false;
+    LinearOpMode op = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -54,8 +73,11 @@ public class HardwareVator
         motorRL.setDirection(DcMotor.Direction.FORWARD);
         motorRR.setDirection(DcMotor.Direction.FORWARD);
         motorA2.setDirection(DcMotor.Direction.REVERSE);
-        jt = hwMap.get(Servo.class, "ds_0");
-        flip = hwMap.get(Servo.class, "ds_1");
+        jt = hwMap.get(Servo.class,"servo_1_0");
+        swipe = hwMap.get(Servo.class,"servo_1_1");
+        flipRight = hwMap.get(Servo.class,"servo_1_2");
+        flipLeft = hwMap.get(Servo.class,"servo_2_0");
+
         //servo2 = hwMap.get(Servo.class, "s11");
         //servo3 = hwMap.get(Servo.class, "s20");
         sensorColor = hwMap.get(ColorSensor.class, "color");
@@ -72,7 +94,29 @@ public class HardwareVator
         motorA1.setPower(0);
         motorA2.setPower(0);
         jt.setPosition(0);
-        flip.setPosition(0.9);
+        swipe.setPosition(0.9);
+        flipRight.setPosition(flipRightPos);
+        flipLeft.setPosition(flipLeftPos);
     }
- }
+
+
+    public void flipUp() {
+        //flipRightDown = 0.0, flipLeftDown = 1.0
+        flipRightPos += .05;
+        flipLeftPos -= .05;
+        flipRightPos = Range.clip(flipRightPos, flipRightDown, flipRightUp);
+        flipLeftPos = Range.clip(flipLeftPos, flipLeftUp, flipLeftDown);
+        flipRight.setPosition(flipRightPos);
+        flipLeft.setPosition(flipLeftPos);
+    }
+
+    public void flipDown() {
+        flipRightPos -= .05;
+        flipLeftPos += .05;
+        flipRightPos = Range.clip(flipRightPos, flipRightDown, flipRightUp);
+        flipLeftPos = Range.clip(flipLeftPos, flipLeftUp, flipLeftDown);
+        flipRight.setPosition(flipRightPos);
+        flipLeft.setPosition(flipLeftPos);
+    }
+}
 
