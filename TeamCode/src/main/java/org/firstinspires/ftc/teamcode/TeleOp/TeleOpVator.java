@@ -83,25 +83,21 @@ public class TeleOpVator extends OpMode{
     @Override
     public void loop() {
 
-
-        
-
-        
         if (gamepad2.x) {
             robot.swipe.setPosition(0.6);
-        } else if (gamepad2.a) {
-            robot.swipe.setPosition(0);
         }
+        //else if (gamepad2.a) {
+          //  robot.swipe.setPosition(0);
+        //}
         // Run intake pulley wheels on left controller 2 stick
         if (gamepad2.left_stick_y > 0.1f) {
            m_4 = -gamepad2.left_stick_y;
            m_5 = -gamepad2.left_stick_y;
-        } else if (gamepad2.right_trigger > 0.1f) {
-            m_4 = gamepad2.left_stick_y;
-            m_5 = gamepad2.left_stick_y;
         }
-        
-        //-gamepad2.right_trigger*2
+        else {
+            m_4 = 0;
+            m_5 = 0;
+        }
 
         //left bumper power reduction
         if (gamepad1.left_bumper) {
