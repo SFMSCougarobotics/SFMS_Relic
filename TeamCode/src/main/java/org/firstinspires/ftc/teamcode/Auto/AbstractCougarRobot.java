@@ -25,6 +25,10 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
     public double swipecenter = 0.9;
     public boolean isRed = false;
     public boolean isFront = false;
+    public double flipRightDown = 0.0;
+    public double flipRightUp = 0.65;
+    public double flipLeftDown = 1.0;
+    public double flipLeftUp = 0.35;
 
     public void lowerJewelTool() {
         robot.jt.setPosition(jtdown);
@@ -109,6 +113,9 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
             if(isFront) {
                 //we are in the front
                 goForward(1);
+                turnRight(1.5);
+                goBackward(0.5);
+                flipglyph();
             } else {
                 goForward(1);
                 strafeRight(1.5);
@@ -183,7 +190,59 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
         robot.motorRL.setPower(0);
         robot.motorRR.setPower(0);
     }
-    
+
+    public void turnLeft(double t) {
+        // Step 1:  Drive forward for t seconds
+        robot.motorFL.setPower(-FORWARD_SPEED);
+        robot.motorFR.setPower(-FORWARD_SPEED);
+        robot.motorRL.setPower(FORWARD_SPEED);
+        robot.motorRR.setPower(FORWARD_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < t)) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        robot.motorFL.setPower(0);
+        robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);
+        robot.motorRR.setPower(0);
+    }
+
+    public void turnRight(double t) {
+        // Step 1:  Drive forward for t seconds
+        robot.motorFL.setPower(FORWARD_SPEED);
+        robot.motorFR.setPower(FORWARD_SPEED);
+        robot.motorRL.setPower(-FORWARD_SPEED);
+        robot.motorRR.setPower(-FORWARD_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < t)) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        robot.motorFL.setPower(0);
+        robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);
+        robot.motorRR.setPower(0);
+    }
+
+    public void intakeON() {
+        // Step 1:  Drive forward for t seconds
+        robot.motorA1.setPower(0.75);
+        robot.motorA2.setPower(0.75);
+    }
+
+    public void intakeOFF() {
+        // Step 1:  Drive forward for t seconds
+        robot.motorA1.setPower(0);
+        robot.motorA2.setPower(0);
+    }
+    public void flipglyph(){
+        robot.flipRight.setPosition(flipRightUp);
+        robot.flipLeft.setPosition(flipLeftUp);
+        robot.flipRight.setPosition(flipRightDown);
+        robot.flipLeft.setPosition(flipLeftDown);
+    }
+
     public void pause(double t) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
