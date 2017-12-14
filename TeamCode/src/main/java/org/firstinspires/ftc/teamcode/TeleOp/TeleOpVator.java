@@ -30,7 +30,7 @@ public class TeleOpVator extends OpMode{
         double m_5 = 0;
         double ds_0 = 0;
         double ds_1 = 0.9;
-        double slowfactor = 1;
+        public float slowfactor;
         double rev = 1;
 
     
@@ -100,11 +100,13 @@ public class TeleOpVator extends OpMode{
         }
 
         //left bumper power reduction
-        if (gamepad1.left_bumper) {
-           slowfactor = 4;
-        } else if (!gamepad1.left_bumper) {
-            slowfactor = 1;
-        }
+        //if (gamepad1.left_bumper) {
+        //   slowfactor = 4;
+        //} else if(!gamepad1.left_bumper){
+        //    slowfactor = 1;
+        //}
+        slowfactor = (float) (1-(0.75*(gamepad1.left_trigger*gamepad1.left_trigger)));
+
         //right bumper reverse control
         if (gamepad1.right_bumper) {
             rev -= 2;
@@ -145,10 +147,10 @@ public class TeleOpVator extends OpMode{
                 m_0 = m_1 = m_2 = m_3 = 0;
             }
         // write power to motors
-        robot.motorFR.setPower(m_1/slowfactor*rev);
-        robot.motorRL.setPower(m_0/slowfactor*rev);
-        robot.motorRR.setPower(m_2/slowfactor*rev);
-        robot.motorFL.setPower(m_3/slowfactor*rev);
+        robot.motorFR.setPower(m_1*slowfactor*rev);
+        robot.motorRL.setPower(m_0*slowfactor*rev);
+        robot.motorRR.setPower(m_2*slowfactor*rev);
+        robot.motorFL.setPower(m_3*slowfactor*rev);
         robot.motorA1.setPower(m_4);
         robot.motorA2.setPower(m_5);
 
