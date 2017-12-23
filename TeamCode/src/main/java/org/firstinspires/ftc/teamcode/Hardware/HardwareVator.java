@@ -38,13 +38,14 @@ public class HardwareVator
     public ElapsedTime runtime = new ElapsedTime();
     public double FORWARD_SPEED = 0.4;
     public double TURN_SPEED    = 0.5;
-    public double jtdown = 0.57;
-    public double jtup = 0.0;
-    public double swipefront = 0.7;
-    public double swipeback = 1;
-    public double swipecenter = 0.9;
+    public double jtdown = 0.30; //now 0.25 with combined bot
+    public double jtup = 0.9; //now 0.9
+    public double swipefront = 0.0; //now 0
+    public double swipeback = 0.3; //now 0.3
+    public double swipecenter = 0.13; //now 0.13
     public boolean isRed = false;
     public boolean isFront = false;
+    public boolean debugmode = false;
     LinearOpMode op = null;
 
     /* local OpMode members. */
@@ -62,21 +63,21 @@ public class HardwareVator
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        motorFR  = hwMap.get(DcMotor.class, "m_1");
+        motorRR = hwMap.get(DcMotor.class, "m_0");
+        motorFR = hwMap.get(DcMotor.class, "m_1");
+        motorRL = hwMap.get(DcMotor.class, "m_2");
         motorFL = hwMap.get(DcMotor.class, "m_3");
-        motorRL = hwMap.get(DcMotor.class, "m_0");
-        motorRR = hwMap.get(DcMotor.class, "m_2");
         motorA1 = hwMap.get(DcMotor.class, "m_4");
         motorA2 = hwMap.get(DcMotor.class, "m_5");
         motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.FORWARD);
         motorRL.setDirection(DcMotor.Direction.FORWARD);
-        motorRR.setDirection(DcMotor.Direction.FORWARD);
+        motorRR.setDirection(DcMotor.Direction.REVERSE);
         motorA2.setDirection(DcMotor.Direction.REVERSE);
         jt = hwMap.get(Servo.class,"servo_1_0");
         swipe = hwMap.get(Servo.class,"servo_1_1");
         flipRight = hwMap.get(Servo.class,"servo_1_2");
-        flipLeft = hwMap.get(Servo.class,"servo_2_0");
+        flipLeft = hwMap.get(Servo.class,"servo_1_3");
 
         //servo2 = hwMap.get(Servo.class, "s11");
         //servo3 = hwMap.get(Servo.class, "s20");
@@ -93,8 +94,8 @@ public class HardwareVator
         motorRR.setPower(0);
         motorA1.setPower(0);
         motorA2.setPower(0);
-        jt.setPosition(0);
-        swipe.setPosition(0.9);
+        jt.setPosition(jtup);
+        swipe.setPosition(swipecenter);
         flipRight.setPosition(flipRightPos);
         flipLeft.setPosition(flipLeftPos);
     }
@@ -117,6 +118,65 @@ public class HardwareVator
         flipLeftPos = Range.clip(flipLeftPos, flipLeftUp, flipLeftDown);
         flipRight.setPosition(flipRightPos);
         flipLeft.setPosition(flipLeftPos);
+    }
+
+    public void flipSlowly(int direction) {
+        //direction 0 for down, 1 for up
+        //the interval is how many units we increase or decrease
+        //tickms is how many milliseconds to wait between changes
+        //assume we are going down, and we will reverse if we are going up
+        double interval = 0.1;
+        double tickms = 0.1;
+
+        double rightInterval = 0.0;
+        //assume the servo is up
+
+        if(flipRightDown < flipRightUp) {
+            //we want the right servo to decrease to go down
+            rightInterval = -1 * interval;
+        } else {
+            rightInterval = interval;
+        }
+
+        double leftInterval = 0.0;
+        if(flipLeftDown < flipLeftUp) {
+            //we want the left servo to decrease to go down
+            leftInterval = -1 * interval;
+        } else {
+            leftInterval = interval;
+        }
+
+        //if we are going up, then reverse the intervals
+        if(direction == 1) {
+            leftInterval *= -1;
+            rightInterval *= -1;
+        }
+
+        if(direction == 1) {
+            //we want to increase position
+            while(flipRightPos > flipRightUp) {
+                flipRightPos += rightInterval;
+                flipLeftPos += leftInterval;
+                flipRight.setPosition(flipRightPos);
+                flipLeft.setPosition(flipLeftPos);
+                runtime.reset();
+                while (runtime.seconds() < tickms) {
+                    //do nothing while the arm moves a bit
+                }
+            }
+        } else {
+            //we want to decrease position
+            while(flipRightPos < flipRightUp) {
+                flipRightPos += rightInterval;
+                flipLeftPos += leftInterval;
+                flipRight.setPosition(flipRightPos);
+                flipLeft.setPosition(flipLeftPos);
+                runtime.reset();
+                while (runtime.seconds() < tickms) {
+                    //do nothing while the arm moves a bit
+                }
+            }
+        }
     }
 }
 

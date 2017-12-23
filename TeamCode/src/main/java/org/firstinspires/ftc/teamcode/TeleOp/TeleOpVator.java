@@ -30,7 +30,7 @@ public class TeleOpVator extends OpMode{
         double m_5 = 0;
         double ds_0 = 0;
         double ds_1 = 0.9;
-        public float slowfactor;
+        public float slowfactor = 1.0f;
         double rev = 1;
 
     
@@ -65,8 +65,8 @@ public class TeleOpVator extends OpMode{
         robot.motorFL.setPower(m_3);
         robot.motorA1.setPower(m_4);
         robot.motorA2.setPower(m_5);
-        robot.jt.setPosition(ds_0);
-        robot.swipe.setPosition(ds_1);
+        robot.jt.setPosition(robot.jtup);
+        robot.swipe.setPosition(robot.swipecenter);
     }
     
     /*
@@ -83,43 +83,76 @@ public class TeleOpVator extends OpMode{
     @Override
     public void loop() {
 
+        //GAMEPAD 2 CONTROLS
+
         if (gamepad2.x) {
-            robot.swipe.setPosition(0.6);
+            robot.swipe.setPosition(robot.swipecenter);
+            robot.jt.setPosition(robot.jtup);
         }
-        //else if (gamepad2.a) {
-          //  robot.swipe.setPosition(0);
-        //}
+
         // Run intake pulley wheels on left controller 2 stick
         if (gamepad2.left_stick_y > 0.1f) {
            m_4 = -gamepad2.left_stick_y;
            m_5 = -gamepad2.left_stick_y;
-        }
-        else {
+        } else if (gamepad2.left_stick_y < -0.1f) {
+            m_4 = -gamepad2.left_stick_y;
+            m_5 = -gamepad2.left_stick_y;
+        } else if (gamepad2.right_stick_y > 0.5f) {
+            m_4 = -gamepad2.right_stick_y;
+            m_5 = 0;
+        } else if (gamepad2.right_stick_y < -0.5f) {
+            m_4 = -gamepad2.right_stick_y;
+            m_5 = 0;
+        } else {
             m_4 = 0;
             m_5 = 0;
         }
 
-        //left bumper power reduction
-        //if (gamepad1.left_bumper) {
-        //   slowfactor = 4;
-        //} else if(!gamepad1.left_bumper){
-        //    slowfactor = 1;
-        //}
-        slowfactor = (float) (1-(0.75*(gamepad1.left_trigger*gamepad1.left_trigger)));
+        if(robot.debugmode) {
+            if(gamepad2.dpad_left) {
+                robot.motorFL.setPower(0.3);
+            } else if(gamepad2.dpad_down) {
+                robot.motorRL.setPower(0.3);
+            } else if(gamepad2.dpad_up) {
+                robot.motorRR.setPower(0.3);
+            } else if(gamepad2.dpad_right) {
+                robot.motorFR.setPower(0.3);
+            } else {
+                robot.motorFL.setPower(0);
+                robot.motorFR.setPower(0);
+                robot.motorRL.setPower(0);
+                robot.motorRR.setPower(0);
+            }
+        } else if(gamepad2.a && gamepad2.b && gamepad2.x && gamepad2.y) {
+            robot.debugmode = true;
+        }
+        //GAMEPAD 1 CONTROLS
+
+        if(gamepad1.left_bumper) {
+            slowfactor += 0.25;
+            if(slowfactor > 1.0) {
+                slowfactor = 0.50f;
+            }
+            while(gamepad1.left_bumper) {
+                telemetry.addData("Speed", "%.2f", slowfactor);
+                telemetry.update();
+            }
+        }
 
         //right bumper reverse control
         if (gamepad1.right_bumper) {
-            rev -= 2;
-            if (rev == -1)
-            telemetry.addLine()
-                    .addData("Rev", "%.2f", rev)
-                    .addData("Mode:","Reverse");
-            else
-                telemetry.addLine()
-                        .addData("Rev", "%.2f", rev)
-                        .addData("Mode:","Drive");
-            if (rev < -2){
-                rev = 1;
+            rev *= -1; //toggle between -1 and 1
+            while(gamepad1.right_bumper) {
+                if (rev == -1) {
+                    telemetry.addLine()
+                            .addData("Rev", "%.2f", rev)
+                            .addData("Mode:", "Reverse");
+                } else {
+                    telemetry.addLine()
+                            .addData("Rev", "%.2f", rev)
+                            .addData("Mode:", "Drive");
+                }
+                telemetry.update();
             }
         }
         if(gamepad2.y) {
@@ -130,37 +163,52 @@ public class TeleOpVator extends OpMode{
 
         // dpad control for mecanum wheel drive
             if (gamepad1.dpad_right) {
-                m_1 = -1;m_2 = -1;m_0 = 1;m_3 = 1;
+                m_3 = 1;    m_1 = -1;
+                m_2 = -1;   m_0 = 1;
             } else if (gamepad1.dpad_left) {
-                m_1 = 1;m_2 = 1;m_0 = -1;m_3 = -1;
+                m_3 = -1;    m_1 = 1;
+                m_2 = 1;     m_0 = -1;
             } else if (gamepad1.dpad_up) {
-                m_1 = 1;m_0 = 1;m_2 = 1;m_3 = 1;
+                m_3 = 1;    m_1 = 1;
+                m_2 = 1;    m_0 = 1;
             } else if (gamepad1.dpad_down) {
-                m_1 = -1;m_0 = -1;m_2 = -1;m_3 = -1;
+                m_3 = -1;    m_1 = -1;
+                m_2 = -1;    m_0 = -1;
             } else if (gamepad1.right_stick_x < -0.1) {
-                m_0 = -gamepad1.right_stick_x;m_2 = gamepad1.right_stick_x;
-                m_1 = -gamepad1.right_stick_x;m_3 = gamepad1.right_stick_x;
+                m_0 = -gamepad1.right_stick_x;
+                m_2 = gamepad1.right_stick_x;
+                m_1 = -gamepad1.right_stick_x;
+                m_3 = gamepad1.right_stick_x;
             } else if (gamepad1.right_stick_x > 0.1) {
-                m_0 = -gamepad1.right_stick_x;m_2 = gamepad1.right_stick_x;
-                m_1 = -gamepad1.right_stick_x;m_3 = gamepad1.right_stick_x;
+                m_0 = -gamepad1.right_stick_x;
+                m_2 = gamepad1.right_stick_x;
+                m_1 = -gamepad1.right_stick_x;
+                m_3 = gamepad1.right_stick_x;
             } else {
                 m_0 = m_1 = m_2 = m_3 = 0;
             }
-        // write power to motors
-        robot.motorFR.setPower(m_1*slowfactor*rev);
-        robot.motorRL.setPower(m_0*slowfactor*rev);
-        robot.motorRR.setPower(m_2*slowfactor*rev);
-        robot.motorFL.setPower(m_3*slowfactor*rev);
-        robot.motorA1.setPower(m_4);
-        robot.motorA2.setPower(m_5);
+            // write power to motors
+            robot.motorFR.setPower(m_1*slowfactor*rev);
+            robot.motorRL.setPower(m_2*slowfactor*rev);
+            robot.motorRR.setPower(m_0*slowfactor*rev);
+            robot.motorFL.setPower(m_3*slowfactor*rev);
+            robot.motorA1.setPower(m_4);
+            robot.motorA2.setPower(m_5);
 
-//write to telemetry once at the end
-        telemetry.addData("m_2", "%.2f", m_2);
-        telemetry.addData("m_1", "%.2f", m_1);
-        telemetry.addData("m_3", "%.2f", m_3);
-        telemetry.addData("m_0", "%.2f", m_0);
-        telemetry.addData("m_4", "%.2f", m_4);
-        //telemetry.addData("m_5", "%.2f", m_5);
+            //write to telemetry once at the end
+            if(rev==1) {
+                telemetry.addLine().addData("Rev", "%.2f", rev).addData("Mode:", "Drive");
+            }else {
+                telemetry.addLine().addData("Rev", "%.2f", rev).addData("Mode:", "Reverse");
+            }
+            telemetry.addData("Speed", "%.2f", slowfactor);
+            telemetry.addData("FrontRight:m_1", "%.2f", m_1*slowfactor*rev);
+            telemetry.addData("FrontLeft-m_3", "%.2f", m_3*slowfactor*rev);
+            telemetry.addData("BackLeft-m_2", "%.2f", m_2*slowfactor*rev);
+            telemetry.addData("BackRight-m_0", "%.2f", m_0*slowfactor*rev);
+            telemetry.addData("m_4", "%.2f", m_4);
+            //telemetry.addData("m_5", "%.2f", m_5);
+            telemetry.update();
         }
 
     /*

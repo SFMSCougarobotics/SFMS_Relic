@@ -6,26 +6,23 @@ public class AutoCougarRobot {
         // Send telemetry message to signify robot waiting;
         o.telemetry.addData("Status", "Ready to run ");
         o.telemetry.update();
-        
-        o.strafeLeft(30);
-        o.pause(5);
+
+        //o.turnLeft(10);
+        //o.turnRight(10);
+
+        o.raiseJewelTool();
         o.swipeCenter();
-        o.pause(3);
+        o.pause(1);
         o.lowerJewelTool();
         o.pause(3);
         o.swipeOpponentColor();
-        //o.flipFront();
-        //o.pause(3);
-        //o.flipBack();
-        //o.pause(3);
-        //o.goForward(2.5);
-        //o.pause(5);
+        o.pause(1);
+        o.swipeCenter();
+        o.pause(1);
         o.raiseJewelTool();
-        o.pause(5);
+        o.pause(1);
         
         o.moveTheRightWay();
-        //o.goForward(1);
-        //o.goForward(2.5);
 
 /*
         while (o.runtime.seconds() < 1.0) {

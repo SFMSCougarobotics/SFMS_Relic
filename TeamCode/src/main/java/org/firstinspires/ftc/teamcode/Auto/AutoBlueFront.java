@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous(name="AutoBlueFront", group="Auto")
+//@Autonomous(name="AutoBlueFront", group="Auto")
 
 public class AutoBlueFront extends AbstractCougarRobot {
     public AutoCougarRobot cougar = new AutoCougarRobot();
