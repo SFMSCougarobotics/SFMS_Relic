@@ -22,6 +22,7 @@ public class AutoOption extends AbstractCougarRobot {
                     telemetry.update();
                 }
             }
+
             if (gamepad1.y) {
                 isFront = ! isFront;
                 while(gamepad1.y) {
@@ -38,7 +39,7 @@ public class AutoOption extends AbstractCougarRobot {
             }
             robot.swipe.setPosition(swipePosition);
             telemetry.addData("swipePos",swipePosition);
-            telemetry.addData("Alliance (a)", isRed ? "RED" : "BLUE");
+            telemetry.addData("Alliance (a)", isRed ?   "RED"   : "BLUE");
             telemetry.addData("Position (y)", isFront ? "FRONT" : "BACK");
             //telemetry.addData("Time", getRuntime());
             telemetry.update();

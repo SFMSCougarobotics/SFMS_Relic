@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -23,10 +24,11 @@ public class HardwareVator
     public DcMotor  motorA2 = null;
     public Servo jt  = null;
     public Servo swipe  = null;
-    public Servo    flipRight = null;
+    //public Servo    flipRight = null;
     public Servo    flipLeft = null;
     public ColorSensor sensorColor = null;
     public DistanceSensor sensorDistance = null;
+    private BNO055IMU imu;
     public DigitalChannel touch1 = null;
     public DigitalChannel touch2 = null;
     double flipRightDown = 0.0;
@@ -76,7 +78,7 @@ public class HardwareVator
         motorA2.setDirection(DcMotor.Direction.REVERSE);
         jt = hwMap.get(Servo.class,"servo_1_0");
         swipe = hwMap.get(Servo.class,"servo_1_1");
-        flipRight = hwMap.get(Servo.class,"servo_1_2");
+        //flipRight = hwMap.get(Servo.class,"servo_1_2");
         flipLeft = hwMap.get(Servo.class,"servo_1_3");
 
         //servo2 = hwMap.get(Servo.class, "s11");
@@ -96,27 +98,27 @@ public class HardwareVator
         motorA2.setPower(0);
         jt.setPosition(jtup);
         swipe.setPosition(swipecenter);
-        flipRight.setPosition(flipRightPos);
+        //flipRight.setPosition(flipRightPos);
         flipLeft.setPosition(flipLeftPos);
     }
 
 
     public void flipUp() {
         //flipRightDown = 0.0, flipLeftDown = 1.0
-        flipRightPos += .05;
+        //flipRightPos += .05;
         flipLeftPos -= .05;
-        flipRightPos = Range.clip(flipRightPos, flipRightDown, flipRightUp);
+        //flipRightPos = Range.clip(flipRightPos, flipRightDown, flipRightUp);
         flipLeftPos = Range.clip(flipLeftPos, flipLeftUp, flipLeftDown);
-        flipRight.setPosition(flipRightPos);
+        //flipRight.setPosition(flipRightPos);
         flipLeft.setPosition(flipLeftPos);
     }
 
     public void flipDown() {
-        flipRightPos -= .05;
+        //flipRightPos -= .05;
         flipLeftPos += .05;
-        flipRightPos = Range.clip(flipRightPos, flipRightDown, flipRightUp);
+        //flipRightPos = Range.clip(flipRightPos, flipRightDown, flipRightUp);
         flipLeftPos = Range.clip(flipLeftPos, flipLeftUp, flipLeftDown);
-        flipRight.setPosition(flipRightPos);
+        //flipRight.setPosition(flipRightPos);
         flipLeft.setPosition(flipLeftPos);
     }
 
@@ -128,15 +130,15 @@ public class HardwareVator
         double interval = 0.1;
         double tickms = 0.1;
 
-        double rightInterval = 0.0;
-        //assume the servo is up
-
-        if(flipRightDown < flipRightUp) {
-            //we want the right servo to decrease to go down
-            rightInterval = -1 * interval;
-        } else {
-            rightInterval = interval;
-        }
+//        double rightInterval = 0.0;
+//        //assume the servo is up
+//
+//        if(flipRightDown < flipRightUp) {
+//            //we want the right servo to decrease to go down
+//            rightInterval = -1 * interval;
+//        } else {
+//            rightInterval = interval;
+//        }
 
         double leftInterval = 0.0;
         if(flipLeftDown < flipLeftUp) {
@@ -149,15 +151,15 @@ public class HardwareVator
         //if we are going up, then reverse the intervals
         if(direction == 1) {
             leftInterval *= -1;
-            rightInterval *= -1;
+            //rightInterval *= -1;
         }
 
         if(direction == 1) {
             //we want to increase position
-            while(flipRightPos > flipRightUp) {
-                flipRightPos += rightInterval;
+            while(flipLeftPos > flipLeftUp) {
+                //flipRightPos += rightInterval;
                 flipLeftPos += leftInterval;
-                flipRight.setPosition(flipRightPos);
+                //flipRight.setPosition(flipRightPos);
                 flipLeft.setPosition(flipLeftPos);
                 runtime.reset();
                 while (runtime.seconds() < tickms) {
@@ -166,10 +168,10 @@ public class HardwareVator
             }
         } else {
             //we want to decrease position
-            while(flipRightPos < flipRightUp) {
-                flipRightPos += rightInterval;
+            while(flipLeftPos < flipLeftUp) {
+                //flipRightPos += rightInterval;
                 flipLeftPos += leftInterval;
-                flipRight.setPosition(flipRightPos);
+                //flipRight.setPosition(flipRightPos);
                 flipLeft.setPosition(flipLeftPos);
                 runtime.reset();
                 while (runtime.seconds() < tickms) {

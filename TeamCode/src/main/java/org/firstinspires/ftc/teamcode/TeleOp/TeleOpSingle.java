@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareVator;
 
 
-@TeleOp(name="TeleOpVator", group="TeleOp")
+@TeleOp(name="TeleOpSingle", group="TeleOp")
 
 public class TeleOpSingle extends OpMode{
 
@@ -89,6 +89,10 @@ public class TeleOpSingle extends OpMode{
             intake++;
             if (intake > 2) {
                 intake = 0;
+            }
+            while(gamepad1.a) {
+                telemetry.addData("Intake", "%.2f", intake);
+                telemetry.update();
             }
         }
 

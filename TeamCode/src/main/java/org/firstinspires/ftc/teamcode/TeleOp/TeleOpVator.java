@@ -22,7 +22,7 @@ public class TeleOpVator extends OpMode{
         
 
 
-        public double m_1 = 0;
+        double m_1 = 0;
         double m_0 = 0;
         double m_2 = 0;
         double m_3 = 0;
@@ -89,6 +89,10 @@ public class TeleOpVator extends OpMode{
             robot.swipe.setPosition(robot.swipecenter);
             robot.jt.setPosition(robot.jtup);
         }
+        else{
+            robot.swipe.setPosition(robot.swipecenter);
+            robot.jt.setPosition(robot.jtup);
+        }
 
         // Run intake pulley wheels on left controller 2 stick
         if (gamepad2.left_stick_y > 0.1f) {
@@ -99,33 +103,33 @@ public class TeleOpVator extends OpMode{
             m_5 = -gamepad2.left_stick_y;
         } else if (gamepad2.right_stick_y > 0.5f) {
             m_4 = -gamepad2.right_stick_y;
-            m_5 = 0;
+            m_5 = gamepad2.right_stick_y;
         } else if (gamepad2.right_stick_y < -0.5f) {
-            m_4 = -gamepad2.right_stick_y;
-            m_5 = 0;
+            m_4 = gamepad2.right_stick_y;
+            m_5 = -gamepad2.right_stick_y;
         } else {
             m_4 = 0;
             m_5 = 0;
         }
 
-        if(robot.debugmode) {
-            if(gamepad2.dpad_left) {
-                robot.motorFL.setPower(0.3);
-            } else if(gamepad2.dpad_down) {
-                robot.motorRL.setPower(0.3);
-            } else if(gamepad2.dpad_up) {
-                robot.motorRR.setPower(0.3);
-            } else if(gamepad2.dpad_right) {
-                robot.motorFR.setPower(0.3);
-            } else {
-                robot.motorFL.setPower(0);
-                robot.motorFR.setPower(0);
-                robot.motorRL.setPower(0);
-                robot.motorRR.setPower(0);
-            }
-        } else if(gamepad2.a && gamepad2.b && gamepad2.x && gamepad2.y) {
-            robot.debugmode = true;
-        }
+//        if(robot.debugmode) {
+//            if(gamepad2.dpad_left) {
+//                robot.motorFL.setPower(0.3);
+//            } else if(gamepad2.dpad_down) {
+//                robot.motorRL.setPower(0.3);
+//            } else if(gamepad2.dpad_up) {
+//                robot.motorRR.setPower(0.3);
+//            } else if(gamepad2.dpad_right) {
+//                robot.motorFR.setPower(0.3);
+//            } else {
+//                robot.motorFL.setPower(0);
+//                robot.motorFR.setPower(0);
+//                robot.motorRL.setPower(0);
+//                robot.motorRR.setPower(0);
+//            }
+//        } else if(gamepad2.a && gamepad2.b && gamepad2.x && gamepad2.y) {
+//            robot.debugmode = true;
+//        }
         //GAMEPAD 1 CONTROLS
 
         if(gamepad1.left_bumper) {
@@ -175,15 +179,11 @@ public class TeleOpVator extends OpMode{
                 m_3 = -1;    m_1 = -1;
                 m_2 = -1;    m_0 = -1;
             } else if (gamepad1.right_stick_x < -0.1) {
-                m_0 = -gamepad1.right_stick_x;
-                m_2 = gamepad1.right_stick_x;
-                m_1 = -gamepad1.right_stick_x;
-                m_3 = gamepad1.right_stick_x;
+                m_3 = gamepad1.right_stick_x; m_1 = -gamepad1.right_stick_x;
+                m_2 = gamepad1.right_stick_x; m_0 = -gamepad1.right_stick_x;
             } else if (gamepad1.right_stick_x > 0.1) {
-                m_0 = -gamepad1.right_stick_x;
-                m_2 = gamepad1.right_stick_x;
-                m_1 = -gamepad1.right_stick_x;
-                m_3 = gamepad1.right_stick_x;
+                m_2 = gamepad1.right_stick_x; m_1 = -gamepad1.right_stick_x;
+                m_3 = gamepad1.right_stick_x; m_0 = -gamepad1.right_stick_x;
             } else {
                 m_0 = m_1 = m_2 = m_3 = 0;
             }
@@ -202,7 +202,7 @@ public class TeleOpVator extends OpMode{
                 telemetry.addLine().addData("Rev", "%.2f", rev).addData("Mode:", "Reverse");
             }
             telemetry.addData("Speed", "%.2f", slowfactor);
-            telemetry.addData("FrontRight:m_1", "%.2f", m_1*slowfactor*rev);
+            telemetry.addData("FrontRight-m_1", "%.2f", m_1*slowfactor*rev);
             telemetry.addData("FrontLeft-m_3", "%.2f", m_3*slowfactor*rev);
             telemetry.addData("BackLeft-m_2", "%.2f", m_2*slowfactor*rev);
             telemetry.addData("BackRight-m_0", "%.2f", m_0*slowfactor*rev);
