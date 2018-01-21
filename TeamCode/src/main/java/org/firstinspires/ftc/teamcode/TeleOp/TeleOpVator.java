@@ -132,7 +132,8 @@ public class TeleOpVator extends OpMode{
 //        }
         //GAMEPAD 1 CONTROLS
 
-        if(gamepad1.left_bumper) {
+        if((gamepad1.left_bumper) || (gamepad1.left_trigger > 0.5f)){
+            /* trying a slowmo button instead of gearshift
             slowfactor += 0.25;
             if(slowfactor > 1.0) {
                 slowfactor = 0.50f;
@@ -141,6 +142,10 @@ public class TeleOpVator extends OpMode{
                 telemetry.addData("Speed", "%.2f", slowfactor);
                 telemetry.update();
             }
+            */
+            slowfactor = 0.50f;
+        } else {
+            slowfactor = 1.0f;
         }
 
         //right bumper reverse control
@@ -160,6 +165,8 @@ public class TeleOpVator extends OpMode{
             }
         }
         if(gamepad2.y) {
+            m_4 = 0.8;
+            m_5 = 0.8;
             robot.flipUp();
         } else {
             robot.flipDown();

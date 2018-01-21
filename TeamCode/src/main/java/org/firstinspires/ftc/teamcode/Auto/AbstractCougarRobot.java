@@ -58,7 +58,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
             return true;
         }
     }
-    
+    /*
     public boolean getTouch1() {
         if(robot.touch1.getState() == true) {
             return false;
@@ -66,7 +66,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
             return true;
         }
     }
-    
+    */
     public void swipeOpponentColor() {
         if(isRed) {
             if(seeBlue()) {
@@ -98,46 +98,124 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
             robot.swipe.setPosition(robot.swipecenter);
         }
     }
-    
-    public void moveTheRightWay() {
+
+    public void moveTheRightWayUsingIntake() {
         if(isRed) {
             //we are red
             if(isFront) {
-                goBackward(1);
-                turnRight(1.25);
-                //goForward(0.2,0.2);
-                flipglyph();
-                goBackwardSp(1.0,0.3);
-                goForwardSp(0.5,0.2);
+                //red front
+                goBackward(1.1);
+                turnLeft(1.1);
+                pause(1);
+                goForwardSp(0.35,0.3); //need to move towards the box a bit
+                pause(0.5);
+                outtakeON();
+                pause(0.5);
+                goForwardSp(0.9,0.2);
+                goBackwardSp(0.6,0.2);
+                goForwardSp(0.9, 0.3);
+                goBackwardSp(0.5,0.3);
+                outtakeOFF();
             } else {
-                //back red
-                goBackward(0.8);
-                strafeRight(1.25);
-                flipglyph();
-                goBackwardSp(1.0,0.2);
-                goForwardSp(0.5,0.2);
+                //red back
+                goBackwardSp(1.3, 0.3);
+                raiseJewelTool();
+                strafeRight(1.6);
+                raiseJewelTool();
+                turnRight(2.6);
+                pause(1);
+                goForwardSp(0.2, 0.2);
+                raiseJewelTool();
+                outtakeON();
+                raiseJewelTool();
+                goForwardSp(0.9,0.3);
+                goBackwardSp(0.6,0.3);
+                goForwardSp(0.9,0.3);
+                goBackwardSp(0.5,0.3);
+                outtakeOFF();
             }
         } else {
             //we are blue
             if(isFront) {
                 //we are blue front
-                goForward(1);
+                goForward(1.1);
+                turnLeft(1.35);
                 pause(0.5);
-                turnRight(1.25);
-                pause(0.5);
-                //goBackward(0.2);
-                flipglyph();
-                goBackwardSp(0.5,0.2);
-                goForwardSp(0.5,0.2);
+                goBackwardSp(0.35, 0.3);
+                outtakeON();
+                goForwardSp(0.8,0.2);
+                goBackwardSp(0.4,0.2);
+                goForwardSp(0.8,0.2);
+                goBackwardSp(0.4,0.2);
+                outtakeOFF();
             } else {
                 //we are blue back
-                goForward(1.0);
-                strafeRight(1.5);
-                turnRight(2.5);
-                goBackwardSp(0.2,0.2);
+                goForwardSp(1.3, 0.3);
+                strafeRight(1.6);
+                pause(0.5);
+                goForwardSp(0.4,0.2);
+                outtakeON();
+                goForwardSp(0.8,0.3);
+                goBackwardSp(0.3,0.3);;
+                goForwardSp(0.8,0.3);
+                goBackwardSp(0.4,0.3);;
+                outtakeOFF();
+            }
+        }
+    }
+    
+    public void moveTheRightWay() {
+        if(robot.useIntakeDuringAutonomous) {
+            moveTheRightWayUsingIntake();
+            return;
+        }
+        if(isRed) {
+            //we are red
+            if(isFront) {
+                //red front
+                goBackward(1.1);
+                turnRight(1.35);
+                goBackwardSp(0.45,0.3); //need to move towards the box a bit
+                intake(1);
                 flipglyph();
-                goBackwardSp(0.5,0.2);
-                goForwardSp(0.5,0.2);
+                goForwardSp(0.7, 0.2);
+                goBackwardSp(1.0,0.3);
+                goForwardSp(0.7,0.2);
+            } else {
+                //red back
+                goBackwardSp(1.55, 0.3);
+                raiseJewelTool();
+                strafeRight(1.6);
+                raiseJewelTool();
+                goForwardSp(0.2, 0.2);
+                raiseJewelTool();
+                intake(1);
+                flipglyph();
+                raiseJewelTool();
+                goBackwardSp(1.0,0.3);
+                goForwardSp(0.4,0.2);
+            }
+        } else {
+            //we are blue
+            if(isFront) {
+                //we are blue front
+                goForward(1.1);
+                turnRight(1.35);
+                goBackwardSp(0.2, 0.3);
+                intake(1);
+                flipglyph();
+                goForwardSp(0.9, 0.3);
+                goBackwardSp(0.3,0.3);
+            } else {
+                //we are blue back
+                goForwardSp(1.60, 0.3);
+                strafeRight(1.6);
+                turnRight(2.7);
+                goBackwardSp(0.2,0.2);
+                intake(1);
+                flipglyph();
+                goForwardSp(0.7, 0.3);
+                goBackwardSp(0.2,0.3);
 
             }
         }
@@ -248,24 +326,59 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
         robot.motorRL.setPower(0);robot.motorRR.setPower(0);
     }
 
+    public void intake(double t) {
+        robot.motorA1.setPower(0.6);
+        robot.motorA2.setPower(0.6);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < t)) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        robot.motorA1.setPower(0);
+        robot.motorA2.setPower(0);
+    }
+
+    public void outtake(double t) {
+        robot.motorA1.setPower(-0.6);
+        robot.motorA2.setPower(-0.6);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < t)) {
+            telemetry.addData("Path", "Leg1: %2.5f S Elapsed", runtime.seconds());
+        }
+        robot.motorA1.setPower(0);
+        robot.motorA2.setPower(0);
+    }
+    public void outtakeON() {
+        robot.motorA1.setPower(-0.6);
+        robot.motorA2.setPower(-0.6);
+    }
+
+    public void outtakeOFF() {
+        robot.motorA1.setPower(0);
+        robot.motorA2.setPower(0);
+    }
+
     public void intakeON() {
-        // Step 1:  Drive forward for t seconds
         robot.motorA1.setPower(0.8);
         robot.motorA2.setPower(0.8);
     }
 
     public void intakeOFF() {
-        // Step 1:  Drive forward for t seconds
         robot.motorA1.setPower(0);
         robot.motorA2.setPower(0);
     }
 
     public void flipglyph(){
         //robot.flipRight.setPosition(flipRightUp);
+        robot.motorA1.setPower(0.8);
+        robot.motorA2.setPower(0.8);
+        pause(1);
         robot.flipLeft.setPosition(flipLeftUp);
         pause(2);
         //robot.flipRight.setPosition(flipRightDown);
         robot.flipLeft.setPosition(flipLeftDown);
+        robot.motorA1.setPower(0);
+        robot.motorA2.setPower(0);
         pause(1);
     }
 

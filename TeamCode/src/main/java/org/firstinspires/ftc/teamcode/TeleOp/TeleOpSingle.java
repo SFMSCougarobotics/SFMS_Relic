@@ -100,7 +100,7 @@ public class TeleOpSingle extends OpMode{
             m_4 = m_5 = 0.8;
         }
         else if (intake == 2){
-            m_4 = m_5 = -0.6;
+            m_4 = m_5 = -0.5;
         }
         else{
             m_4 = m_5 = 0;

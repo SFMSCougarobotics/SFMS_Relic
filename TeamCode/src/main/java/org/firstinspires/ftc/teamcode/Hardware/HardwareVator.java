@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -24,35 +25,23 @@ public class HardwareVator
     public DcMotor  motorA2 = null;
     public Servo jt  = null;
     public Servo swipe  = null;
-    //public Servo    flipRight = null;
     public Servo    flipLeft = null;
     public ColorSensor sensorColor = null;
     public DistanceSensor sensorDistance = null;
-    private BNO055IMU imu;
-    public DigitalChannel touch1 = null;
-    public DigitalChannel touch2 = null;
-    double flipRightDown = 0.0;
-    double flipRightUp = 0.65;
     double flipLeftDown = 1.0;
-    double flipLeftUp = 0.35;
-    double flipRightPos = flipRightDown;
+    double flipLeftUp = 0.3;
     double flipLeftPos = flipLeftDown;
     public ElapsedTime runtime = new ElapsedTime();
-    public double FORWARD_SPEED = 0.4;
-    public double TURN_SPEED    = 0.5;
     public double jtdown = 0.30; //now 0.25 with combined bot
     public double jtup = 0.9; //now 0.9
     public double swipefront = 0.0; //now 0
     public double swipeback = 0.3; //now 0.3
     public double swipecenter = 0.13; //now 0.13
-    public boolean isRed = false;
-    public boolean isFront = false;
-    public boolean debugmode = false;
-    LinearOpMode op = null;
+    public boolean useIntakeDuringAutonomous = false;
+
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
     public HardwareVator(){
@@ -71,10 +60,9 @@ public class HardwareVator
         motorFL = hwMap.get(DcMotor.class, "m_3");
         motorA1 = hwMap.get(DcMotor.class, "m_4");
         motorA2 = hwMap.get(DcMotor.class, "m_5");
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
-        motorRL.setDirection(DcMotor.Direction.FORWARD);
-        motorRR.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorRL.setDirection(DcMotor.Direction.REVERSE);
+        motorRR.setDirection(DcMotor.Direction.FORWARD);//reversed on 1-13-18
         motorA2.setDirection(DcMotor.Direction.REVERSE);
         jt = hwMap.get(Servo.class,"servo_1_0");
         swipe = hwMap.get(Servo.class,"servo_1_1");
@@ -85,10 +73,10 @@ public class HardwareVator
         //servo3 = hwMap.get(Servo.class, "s20");
         sensorColor = hwMap.get(ColorSensor.class, "color");
         sensorDistance = hwMap.get(DistanceSensor.class, "color");
-        touch1 = hwMap.get(DigitalChannel.class, "t1");
-        touch1.setMode(DigitalChannel.Mode.INPUT);
-        touch2 = hwMap.get(DigitalChannel.class, "t2");
-        touch2.setMode(DigitalChannel.Mode.INPUT);
+        //touch1 = hwMap.get(DigitalChannel.class, "t1");
+        //touch1.setMode(DigitalChannel.Mode.INPUT);
+        //touch2 = hwMap.get(DigitalChannel.class, "t2");
+        //touch2.setMode(DigitalChannel.Mode.INPUT);
         // Set all motors to zero power
         motorFR.setPower(0);
         motorFL.setPower(0);
