@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 public class AutoCougarRobot {
 
-    public void go(AbstractEncoders o) {
+    public void go(AbstractCougarRobot o) {
         // Send telemetry message to signify robot waiting;
         o.telemetry.addData("Status", "Ready to run ");
         o.telemetry.update();
