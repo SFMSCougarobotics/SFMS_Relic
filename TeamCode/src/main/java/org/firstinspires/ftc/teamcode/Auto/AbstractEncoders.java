@@ -102,16 +102,16 @@ public abstract class AbstractEncoders extends LinearOpMode {
             //we are red
             if(isFront) {
                 //red front
-                goE(-1.9, 0.5);
-                turnE(-1,0.75,0.2);
+                goE(-1.9, 0.5,3);
+                turnE(-1,0.75,0.2,3);
                 pause(1);
-                goE(0.9,0.3); //need to move towards the box a bit
+                goE(0.9,0.3,3); //need to move towards the box a bit
                 pause(0.5);
                 outtakeON();
                 pause(0.5);
-                goE(-0.2,0.3);
-                goE(0.3, 0.3);
-                goE(-0.2,0.3);
+                goE(-0.2,0.3,3);
+                goE(0.3, 0.3,3);
+                goE(-0.2,0.3,3);
                 outtakeOFF();
             } else {
                 //red back
@@ -135,16 +135,16 @@ public abstract class AbstractEncoders extends LinearOpMode {
             //we are blue
             if(isFront) {
                 //we are blue front
-                goE(1.9, 0.5);
-                turnE(-1,0.75,0.2);
+                goE(1.9, 0.5,3);
+                turnE(-1,0.75,0.2,3);
                 pause(0.5);
-                goE(0.9,0.3); //need to move towards the box a bit
+                goE(0.9,0.3,3); //need to move towards the box a bit
                 pause(0.5);
                 outtakeON();
                 pause(0.5);
-                goE(-.2,0.3);
-                goE(0.3, 0.3);
-                goE(-3,0.3);
+                goE(-.2,0.3,3);
+                goE(0.3, 0.3,3);
+                goE(-3,0.3,3);
                 outtakeOFF();
             } else {
                 //we are blue back
@@ -171,7 +171,7 @@ public abstract class AbstractEncoders extends LinearOpMode {
             //we are red
             if(isFront) {
                 //red front
-                goE(5, 0.5);
+                goE(5, 0.5,3);
                 turnRight(1.35);
                 goBackwardSp(0.45,0.3); //need to move towards the box a bit
                 intake(1);
@@ -271,9 +271,10 @@ public abstract class AbstractEncoders extends LinearOpMode {
         robot.motorRL.setPower(0);robot.motorRR.setPower(0);
     }
 
-    public void goE(double r, double speed) {
+    public void goE(double r, double speed, double timeout) {
         // Step 1: Drive forward for r revolutions (280 encoder counts per rev);
         // Step 2: Set power level
+        // Step 3: Set timeout
         int count;
         count = (int) Math.round(r*280);
         robot.motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -282,17 +283,29 @@ public abstract class AbstractEncoders extends LinearOpMode {
         robot.motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorFL.setTargetPosition(count); robot.motorFR.setTargetPosition(count);
         robot.motorRL.setTargetPosition(count); robot.motorRR.setTargetPosition(count);
+        runtime.reset();
         robot.motorFL.setPower(speed); robot.motorFR.setPower(speed);
         robot.motorRL.setPower(speed); robot.motorRR.setPower(speed);
         robot.motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorRL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (opModeIsActive() &&
+                (robot.motorFL.isBusy() && robot.motorFR.isBusy() &&
+                robot.motorRL.isBusy() && robot.motorRR.isBusy()) &&
+                ((runtime.seconds() < timeout) )){
+
+            telemetry.update();
+
+        }
+        robot.motorFL.setPower(0);robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);robot.motorRR.setPower(0);
     }
-    public void turnE(int dir, double r, double speed) {
+    public void turnE(int dir, double r, double speed, double timeout) {
         // Step 1: Set direction 1 is right, -1 is left
         // Step 2: Drive forward for r revolutions (280 encoder counts per rev);
         // Step 3: Set power level
+        // Step 4: Set timeout
         int count;
         count = (int) Math.round(r * 280);
         robot.motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -303,6 +316,7 @@ public abstract class AbstractEncoders extends LinearOpMode {
         robot.motorFR.setTargetPosition(-dir * count);
         robot.motorRL.setTargetPosition(dir * count);
         robot.motorRR.setTargetPosition(-dir * count);
+        runtime.reset();
         robot.motorFL.setPower(speed);
         robot.motorFR.setPower(speed);
         robot.motorRL.setPower(speed);
@@ -311,6 +325,14 @@ public abstract class AbstractEncoders extends LinearOpMode {
         robot.motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorRL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (opModeIsActive() &&
+                (robot.motorFL.isBusy() && robot.motorFR.isBusy() &&
+                robot.motorRL.isBusy() && robot.motorRR.isBusy()) &&
+                ((runtime.seconds() < timeout) )){
+            telemetry.update();
+        }
+        robot.motorFL.setPower(0);robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);robot.motorRR.setPower(0);
     }
     public void goBackward(double t) {
         // Step 1:  Drive forward for t seconds
