@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,6 +14,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 public class HardwareVator
 {
@@ -28,6 +38,7 @@ public class HardwareVator
     public Servo    flipLeft = null;
     public ColorSensor sensorColor = null;
     public DistanceSensor sensorDistance = null;
+    public BNO055IMU IMU = null;
     double flipLeftDown = 1.0;
     double flipLeftUp = 0.3;
     double flipLeftPos = flipLeftDown;
@@ -63,7 +74,13 @@ public class HardwareVator
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorRL.setDirection(DcMotor.Direction.REVERSE);
         motorRR.setDirection(DcMotor.Direction.FORWARD);//reversed on 1-13-18
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorA1.setDirection(DcMotor.Direction.FORWARD);
         motorA2.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorRL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorRR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         jt = hwMap.get(Servo.class,"servo_1_0");
         swipe = hwMap.get(Servo.class,"servo_1_1");
         //flipRight = hwMap.get(Servo.class,"servo_1_2");
@@ -88,6 +105,23 @@ public class HardwareVator
         swipe.setPosition(swipecenter);
         //flipRight.setPosition(flipRightPos);
         flipLeft.setPosition(flipLeftPos);
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        //imu = hardwareMap.get(BNO055IMU.class, "imu");
+        //imu.initialize(parameters);
+
+        // Set up our telemetry dashboard
+        //composeTelemetry();
     }
 
 
