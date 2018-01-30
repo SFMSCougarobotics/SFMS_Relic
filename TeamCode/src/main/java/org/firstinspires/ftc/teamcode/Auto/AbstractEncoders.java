@@ -102,16 +102,17 @@ public abstract class AbstractEncoders extends LinearOpMode {
             //we are red
             if(isFront) {
                 //red front
-                goE(-1.9, 0.5,3);
-                turnE(-1,0.75,0.2,3);
+                goE(-2.5, 0.3,3);
                 pause(1);
-                goE(0.9,0.3,3); //need to move towards the box a bit
-                pause(0.5);
+                turnE(-1,1.6,0.3,3);
+                pause(1);
+                goE(0.4,0.3,1); //need to move towards the box a bit
+                pause(1);
                 outtakeON();
                 pause(0.5);
-                goE(-0.2,0.3,3);
-                goE(0.3, 0.3,3);
-                goE(-0.2,0.3,3);
+                goE(-0.4,0.3,1);
+                goE(0.4, 0.3,1);
+                goE(-0.4,0.3,1);
                 outtakeOFF();
             } else {
                 //red back
@@ -161,63 +162,7 @@ public abstract class AbstractEncoders extends LinearOpMode {
             }
         }
     }
-    
-    public void moveTheRightWay() {
-        if(robot.useIntakeDuringAutonomous) {
-            moveTheRightWayUsingIntake();
-            return;
-        }
-        if(isRed) {
-            //we are red
-            if(isFront) {
-                //red front
-                goE(5, 0.5,3);
-                turnRight(1.35);
-                goBackwardSp(0.45,0.3); //need to move towards the box a bit
-                intake(1);
-                flipglyph();
-                goForwardSp(0.7, 0.2);
-                goBackwardSp(1.0,0.3);
-                goForwardSp(0.7,0.2);
-            } else {
-                //red back
-                goBackwardSp(1.55, 0.3);
-                raiseJewelTool();
-                strafeRight(1.6);
-                raiseJewelTool();
-                goForwardSp(0.2, 0.2);
-                raiseJewelTool();
-                intake(1);
-                flipglyph();
-                raiseJewelTool();
-                goBackwardSp(1.0,0.3);
-                goForwardSp(0.4,0.2);
-            }
-        } else {
-            //we are blue
-            if(isFront) {
-                //we are blue front
-                goForward(1.1);
-                turnRight(1.35);
-                goBackwardSp(0.2, 0.3);
-                intake(1);
-                flipglyph();
-                goForwardSp(0.9, 0.3);
-                goBackwardSp(0.3,0.3);
-            } else {
-                //we are blue back
-                goForwardSp(1.60, 0.3);
-                strafeRight(1.6);
-                turnRight(2.7);
-                goBackwardSp(0.2,0.2);
-                intake(1);
-                flipglyph();
-                goForwardSp(0.7, 0.3);
-                goBackwardSp(0.2,0.3);
 
-            }
-        }
-    }
 
     public void strafeLeft(double t) {
         // Step 1:  Drive forward for t seconds
@@ -276,25 +221,32 @@ public abstract class AbstractEncoders extends LinearOpMode {
         // Step 2: Set power level
         // Step 3: Set timeout
         int count;
-        count = (int) Math.round(r*280);
+
+        //one rotation is 14.5 inches
+
+        count = (int) Math.round(-r*1.5*537.6);
         robot.motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorFL.setTargetPosition(count); robot.motorFR.setTargetPosition(count);
         robot.motorRL.setTargetPosition(count); robot.motorRR.setTargetPosition(count);
-        runtime.reset();
         robot.motorFL.setPower(speed); robot.motorFR.setPower(speed);
         robot.motorRL.setPower(speed); robot.motorRR.setPower(speed);
         robot.motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorRL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+        robot.motorFL.setPower(speed); robot.motorFR.setPower(speed);
+        robot.motorRL.setPower(speed); robot.motorRR.setPower(speed);
         while (opModeIsActive() &&
                 (robot.motorFL.isBusy() && robot.motorFR.isBusy() &&
                 robot.motorRL.isBusy() && robot.motorRR.isBusy()) &&
                 ((runtime.seconds() < timeout) )){
 
+            telemetry.addData("Fwd/Bck",  "Running to %7d :%7d", count, count);
+            telemetry.addData("Position",  "Running to %7d :%7d", robot.motorFL.getCurrentPosition(), robot.motorFR.getCurrentPosition());
             telemetry.update();
 
         }
@@ -306,8 +258,11 @@ public abstract class AbstractEncoders extends LinearOpMode {
         // Step 2: Drive forward for r revolutions (280 encoder counts per rev);
         // Step 3: Set power level
         // Step 4: Set timeout
+
+        //for a quarter turn, r should be 1.3
+
         int count;
-        count = (int) Math.round(r * 280);
+        count = (int) Math.round(-r * 1.5 * 537.6);
         robot.motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -316,24 +271,98 @@ public abstract class AbstractEncoders extends LinearOpMode {
         robot.motorFR.setTargetPosition(-dir * count);
         robot.motorRL.setTargetPosition(dir * count);
         robot.motorRR.setTargetPosition(-dir * count);
-        runtime.reset();
-        robot.motorFL.setPower(speed);
-        robot.motorFR.setPower(speed);
-        robot.motorRL.setPower(speed);
-        robot.motorRR.setPower(speed);
+        robot.motorFL.setPower(speed); robot.motorFR.setPower(speed);
+        robot.motorRL.setPower(speed); robot.motorRR.setPower(speed);
         robot.motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorRL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+        robot.motorFL.setPower(speed); robot.motorFR.setPower(speed);
+        robot.motorRL.setPower(speed); robot.motorRR.setPower(speed);
         while (opModeIsActive() &&
-                (robot.motorFL.isBusy() && robot.motorFR.isBusy() &&
-                robot.motorRL.isBusy() && robot.motorRR.isBusy()) &&
-                ((runtime.seconds() < timeout) )){
+            (robot.motorFL.isBusy() ||
+             robot.motorRL.isBusy() &&
+             robot.motorFR.isBusy() ||
+             robot.motorRR.isBusy()
+            ) &&
+            (runtime.seconds() < timeout)
+        ){
+            telemetry.addData("Turn",  "Running to %7d :%7d", dir*count, dir*count);
+            telemetry.addData("Position",  "Running to %7d :%7d", robot.motorFL.getCurrentPosition(), robot.motorFR.getCurrentPosition());
+            telemetry.update();
             telemetry.update();
         }
         robot.motorFL.setPower(0);robot.motorFR.setPower(0);
         robot.motorRL.setPower(0);robot.motorRR.setPower(0);
     }
+
+
+    public void rightE(double r, double speed, double timeout) {
+        // Step 2: Drive forward for r revolutions (280 encoder counts per rev);
+        // Step 3: Set power level
+        // Step 4: Set timeout
+
+        //for a quarter turn, r should be 1.3
+
+        int count;
+        count = (int) Math.round(-r * 1.5 * 537.6);
+        robot.motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorRL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorFL.setTargetPosition(count);
+        robot.motorRL.setTargetPosition(count);
+        robot.motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.motorRL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+        robot.motorFL.setPower(speed);
+        robot.motorRL.setPower(speed);
+        while (opModeIsActive() &&
+                (robot.motorFL.isBusy() ||
+                 robot.motorRL.isBusy()
+                ) &&
+                (runtime.seconds() < timeout)
+            ){
+            telemetry.addData("Turn",  "Running to %7d :%7d", count, count);
+            telemetry.addData("Position",  "Running to %7d :%7d", robot.motorFL.getCurrentPosition(), robot.motorRL.getCurrentPosition());
+            telemetry.update();
+            telemetry.update();
+        }
+        robot.motorFL.setPower(0);
+        robot.motorRL.setPower(0);
+    }
+
+    public void leftE(double r, double speed, double timeout) {
+        // Step 2: Drive forward for r revolutions (280 encoder counts per rev);
+        // Step 3: Set power level
+        // Step 4: Set timeout
+
+        //for a quarter turn, r should be 1.3
+
+        int count;
+        count = (int) Math.round(-r * 1.5 * 537.6);
+        robot.motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorFR.setTargetPosition(count);
+        robot.motorRR.setTargetPosition(count);
+        robot.motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+        robot.motorFR.setPower(speed);
+        robot.motorRR.setPower(speed);
+        while (opModeIsActive() &&
+                (robot.motorFR.isBusy() ||
+                 robot.motorRR.isBusy()
+                ) &&
+                (runtime.seconds() < timeout)
+                ){
+            telemetry.addData("Turn",  "Running to %7d :%7d", count, count);
+            telemetry.addData("Position",  "Running to %7d :%7d", robot.motorFR.getCurrentPosition(), robot.motorRR.getCurrentPosition());
+            telemetry.update();
+            telemetry.update();
+        }
+        robot.motorFR.setPower(0);
+        robot.motorRR.setPower(0);
+    }
+
     public void goBackward(double t) {
         // Step 1:  Drive forward for t seconds
         robot.motorFL.setPower(-FORWARD_SPEED);robot.motorFR.setPower(-FORWARD_SPEED);
