@@ -27,6 +27,7 @@ public abstract class AbstractEncoders extends LinearOpMode {
     public double flipLeftDown = 1.0;
     public double flipLeftUp = 0.35;
 
+
     public void lowerJewelTool() {
         robot.jt.setPosition(robot.jtdown);
     }
@@ -54,15 +55,7 @@ public abstract class AbstractEncoders extends LinearOpMode {
             return true;
         }
     }
-    /*
-    public boolean getTouch1() {
-        if(robot.touch1.getState() == true) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    */
+
     public void swipeOpponentColor() {
         if(isRed) {
             if(seeBlue()) {
@@ -95,69 +88,89 @@ public abstract class AbstractEncoders extends LinearOpMode {
         }
     }
 
+    public double turn90 = 1;
+
     public void moveTheRightWayUsingIntake() {
-        //goE(revolution, speed); 18.85" per revolution
+        //goE(revolution, speed); 12.56" per revolution
         // turnE(direction 1=right & -1=left, revolution, speed)
         if(isRed) {
             //we are red
             if(isFront) {
                 //red front
-                goE(-2.5, 0.3,3);
-                pause(1);
-                turnE(-1,1.6,0.3,3);
-                pause(1);
-                goE(0.4,0.3,1); //need to move towards the box a bit
-                pause(1);
-                outtakeON();
+                goE(-2.5, 0.3,3); //board to CB
                 pause(0.5);
-                goE(-0.4,0.3,1);
-                goE(0.4, 0.3,1);
-                goE(-0.4,0.3,1);
+                turnE(-1,0.3,turn90); //face CB
+                pause(0.5);
+                goE(0.4,0.3,1); //approach CB
+                pause(0.5);
+                outtakeON(); //spit glyph
+                pause(1);
+                goE(-0.4,0.3,1); //back up
+                pause(0.5);
+                goE(0.4, 0.3,1); //push forward
+                pause(0.5);
+                goE(-0.4,0.3,1); //back up
                 outtakeOFF();
             } else {
                 //red back
-                goBackwardSp(1.3, 0.3);
+                goE(-2.5, 0.3,3); //board to approach
+                pause(0.5);
+                turnE(1,0.3,turn90); //turn to parallel CB
+                pause(0.5);
+                goE(1,0.3,1); //move to center to CB
+                //strafeRight(1.6);
                 raiseJewelTool();
-                strafeRight(1.6);
+                turnE(1,0.3,turn90); //turn to face CB
+                pause(0.5);
+                goE(1,0.3,1); //approach CB
                 raiseJewelTool();
-                turnRight(2.6);
+                outtakeON(); //spit glyph
                 pause(1);
-                goForwardSp(0.2, 0.2);
                 raiseJewelTool();
-                outtakeON();
-                raiseJewelTool();
-                goForwardSp(0.9,0.3);
-                goBackwardSp(0.6,0.3);
-                goForwardSp(0.9,0.3);
-                goBackwardSp(0.5,0.3);
+                goE(-1,0.3,1); //back up
+                pause(0.5);
+                goE(1,0.3,1); //push forward
+                pause(0.5);
+                goE(-.75,0.3,1); //back up
                 outtakeOFF();
             }
         } else {
             //we are blue
             if(isFront) {
                 //we are blue front
-                goE(1.9, 0.5,3);
-                turnE(-1,0.75,0.2,3);
+                goE(1.9, 0.5,3); //board to CB
+                pause(0.5);
+                turnE(-1,0.3,turn90);
                 pause(0.5);
                 goE(0.9,0.3,3); //need to move towards the box a bit
                 pause(0.5);
                 outtakeON();
-                pause(0.5);
+                pause(1);
                 goE(-.2,0.3,3);
+                pause(0.5);
                 goE(0.3, 0.3,3);
+                pause(0.5);
                 goE(-3,0.3,3);
                 outtakeOFF();
             } else {
                 //we are blue back
-                goForwardSp(1.3, 0.3);
-                strafeRight(1.6);
+                goE(1,0.3,1);
                 pause(0.5);
-                goForwardSp(0.4,0.2);
+                //strafeRight(1.6);
+                turnE(1,0.3,turn90);
+                pause(0.5);
+                goE(1,0.3,1);
+                pause(0.5);
+                turnE(-1,0.3,turn90);
+                pause(0.5);
+                goE(1,0.3,1);
                 outtakeON();
-                goForwardSp(0.8,0.3);
-                goBackwardSp(0.3,0.3);;
-                goForwardSp(0.8,0.3);
-                goBackwardSp(0.4,0.3);;
+                pause(1);
+                goE(-1,0.3,1);
+                pause(0.5);
+                goE(1,0.3,1);
+                pause(0.5);
+                goE(-.5,0.3,1);
                 outtakeOFF();
             }
         }
@@ -253,7 +266,7 @@ public abstract class AbstractEncoders extends LinearOpMode {
         robot.motorFL.setPower(0);robot.motorFR.setPower(0);
         robot.motorRL.setPower(0);robot.motorRR.setPower(0);
     }
-    public void turnE(int dir, double r, double speed, double timeout) {
+    public void turnE(int dir, double speed, double timeout) {
         // Step 1: Set direction 1 is right, -1 is left
         // Step 2: Drive forward for r revolutions (280 encoder counts per rev);
         // Step 3: Set power level
@@ -261,35 +274,27 @@ public abstract class AbstractEncoders extends LinearOpMode {
 
         //for a quarter turn, r should be 1.3
 
-        int count;
-        count = (int) Math.round(-r * 1.5 * 537.6);
+        //int count;
+        //count = (int) Math.round(-r * 1.5 * 537.6);
         robot.motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.motorFL.setTargetPosition(dir * count);
-        robot.motorFR.setTargetPosition(-dir * count);
-        robot.motorRL.setTargetPosition(dir * count);
-        robot.motorRR.setTargetPosition(-dir * count);
-        robot.motorFL.setPower(speed); robot.motorFR.setPower(speed);
-        robot.motorRL.setPower(speed); robot.motorRR.setPower(speed);
-        robot.motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.motorRL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.motorFL.setTargetPosition(dir * count);
+        //robot.motorFR.setTargetPosition(-dir * count);
+        //robot.motorRL.setTargetPosition(dir * count);
+        //robot.motorRR.setTargetPosition(-dir * count);
+        robot.motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorRL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorRR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         runtime.reset();
-        robot.motorFL.setPower(speed); robot.motorFR.setPower(speed);
-        robot.motorRL.setPower(speed); robot.motorRR.setPower(speed);
+        robot.motorFL.setPower(dir*speed); robot.motorFR.setPower(-dir*speed);
+        robot.motorRL.setPower(dir*speed); robot.motorRR.setPower(-dir*speed);
         while (opModeIsActive() &&
-            (robot.motorFL.isBusy() ||
-             robot.motorRL.isBusy() &&
-             robot.motorFR.isBusy() ||
-             robot.motorRR.isBusy()
-            ) &&
-            (runtime.seconds() < timeout)
-        ){
-            telemetry.addData("Turn",  "Running to %7d :%7d", dir*count, dir*count);
+            (runtime.seconds() < timeout)){
+            //telemetry.addData("Turn",  "Running to %7d :%7d", dir*count, dir*count);
             telemetry.addData("Position",  "Running to %7d :%7d", robot.motorFL.getCurrentPosition(), robot.motorFR.getCurrentPosition());
-            telemetry.update();
             telemetry.update();
         }
         robot.motorFL.setPower(0);robot.motorFR.setPower(0);
