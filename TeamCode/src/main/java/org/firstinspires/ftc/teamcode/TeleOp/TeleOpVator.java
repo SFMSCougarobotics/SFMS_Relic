@@ -143,9 +143,9 @@ public class TeleOpVator extends OpMode{
                 telemetry.update();
             }
             */
-            slowfactor = 0.50f;
-        } else {
             slowfactor = 1.0f;
+        } else {
+            slowfactor = 0.5f;
         }
 
         //right bumper reverse control
