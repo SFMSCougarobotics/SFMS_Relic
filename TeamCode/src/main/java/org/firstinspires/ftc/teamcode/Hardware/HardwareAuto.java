@@ -58,9 +58,9 @@ public class HardwareAuto
         motorFL = hwMap.get(DcMotor.class, "m_3");
         motorA1 = hwMap.get(DcMotor.class, "m_4");
         motorA2 = hwMap.get(DcMotor.class, "m_5");
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
+        motorFL.setDirection(DcMotor.Direction.FORWARD);//Reversals removed to encoder functionality to work
         motorRL.setDirection(DcMotor.Direction.FORWARD);
-        motorRR.setDirection(DcMotor.Direction.FORWARD);//reversed on 1-13-18
+        motorRR.setDirection(DcMotor.Direction.FORWARD);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorA1.setDirection(DcMotor.Direction.FORWARD);
         motorA2.setDirection(DcMotor.Direction.REVERSE);
