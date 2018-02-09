@@ -186,11 +186,11 @@ public class TeleOpVator extends OpMode{
                 m_3 = 1;    m_1 = 1;
                 m_2 = 1;    m_0 = 1;
             } else if (gamepad1.right_stick_x < -0.1) {
-                m_3 = gamepad1.right_stick_x; m_1 = -gamepad1.right_stick_x;
-                m_2 = gamepad1.right_stick_x; m_0 = -gamepad1.right_stick_x;
+                m_3 = -gamepad1.right_stick_x; m_1 = gamepad1.right_stick_x;
+                m_2 = -gamepad1.right_stick_x; m_0 = gamepad1.right_stick_x;
             } else if (gamepad1.right_stick_x > 0.1) {
-                m_2 = gamepad1.right_stick_x; m_1 = -gamepad1.right_stick_x;
-                m_3 = gamepad1.right_stick_x; m_0 = -gamepad1.right_stick_x;
+                m_2 = -gamepad1.right_stick_x; m_1 = gamepad1.right_stick_x;
+                m_3 = -gamepad1.right_stick_x; m_0 = gamepad1.right_stick_x;
             } else {
                 m_0 = m_1 = m_2 = m_3 = 0;
             }

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="AutoUsingEncoders", group="Auto")
 
-public class AutoUsingEncoders extends AbstractEncoders {
+public class AutoUsingEncoders extends AbstractEncodersHWAuto {
     public AutoCougarRobotEncoders cougar = new AutoCougarRobotEncoders();
     
     @Override

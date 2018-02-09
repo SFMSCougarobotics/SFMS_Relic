@@ -131,8 +131,8 @@ public abstract class AbstractCougarRobot5498 extends AbstractCougarRobot {
             //we are blue
             if(isFront) {
                 //we are blue front
-                goForward(1.1);
-                turnLeft(1.6);
+                goForward(1.4);
+                turnLeft(1.3);
                 pause(0.5);
                 goBackwardSp(0.35, 0.3);
                 outtakeON();

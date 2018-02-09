@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -22,7 +23,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 public class HardwareVator
 {
@@ -49,7 +54,9 @@ public class HardwareVator
     public double swipeback = 0.3; //now 0.3
     public double swipecenter = 0.13; //now 0.13
     public boolean useIntakeDuringAutonomous = false;
-
+    public boolean targetLeft = false;
+    public boolean targetRight = false;
+    public boolean targetCenter = false;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -77,10 +84,10 @@ public class HardwareVator
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorA1.setDirection(DcMotor.Direction.FORWARD);
         motorA2.setDirection(DcMotor.Direction.REVERSE);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorRL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorRR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         jt = hwMap.get(Servo.class,"servo_1_0");
         swipe = hwMap.get(Servo.class,"servo_1_1");
         //flipRight = hwMap.get(Servo.class,"servo_1_2");
@@ -124,6 +131,41 @@ public class HardwareVator
         //composeTelemetry();
     }
 
+    public String identifyTarget(double tickms) {
+        VuforiaLocalizer vuforia;
+        String target = "";
+        int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier(
+                "cameraMonitorViewId",
+                "id",
+                hwMap.appContext.getPackageName()
+        );
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "ASw67R//////AAAAGZDZg8GQ5k2jg4Vw1AbxsJctfNc5A4c3MM4rZ7131aV7XLzN6u81EZxsKoqJkgIYSgYot/73fnKdar+08jR7U89z3zClP1haL9O+pW996ZQyz4FtDNCLgoPH+AwdMbE+lQcQzrzJEWTxqyR5pKTSTnLT2cNLdxaE99AbBZOlQlhKWq4Y45xQjTTEfiGqqUBXlSoIbD0ipX8rolD8GoEinCZ8Ld1NbEwAwe3ub1dT3sbU19JGO1VRRF6uO9araTPBnF96LBXvpmPnqCIAX4TC8nxqnRqVZyKfmTP+h8Xq7uxr9PxNJCMV7GD3WTqI2QEk/uFD8ywD3u07rdbSRd35qDk4toZRY8udynZoAxKfk/Vq";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+        relicTrackables.activate();
+        runtime.reset();
+        while (runtime.seconds() < tickms) {
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                target = vuMark.toString();
+                if(target.equals("LEFT")) {
+                    targetLeft = true;
+                } else if(target.equals("RIGHT")) {
+                    targetRight = true;
+                } else if(target.equals("CENTER")) {
+                    targetCenter = true;
+                } else {
+                    //Yikes - the target doesn't match any of these???
+                }
+                return target;
+            }
+        }
+        return "UNKNOWN";
+    }
 
     public void flipUp() {
         //flipRightDown = 0.0, flipLeftDown = 1.0

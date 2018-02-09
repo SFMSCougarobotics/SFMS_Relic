@@ -30,6 +30,9 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
     // public double flipRightUp = 0.65;
     public double flipLeftDown = 1.0;
     public double flipLeftUp = 0.35;
+    public boolean is4947 = true;
+    public boolean is5498 = false;
+
 
     public void lowerJewelTool() {
         robot.jt.setPosition(robot.jtdown);
@@ -42,7 +45,11 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
     public void swipeCenter() {
         robot.swipe.setPosition(robot.swipecenter);
     }
-    
+
+    public String identifyTarget(double tickms) {
+        return robot.identifyTarget(tickms);
+    }
+
     public boolean seeBlue() {
         if(robot.sensorColor.red() < robot.sensorColor.blue()) {
             return true;
@@ -104,35 +111,47 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
             //we are red
             if(isFront) {
                 //red front
-                goBackward(1.1);
-                turnLeft(1.1);
+                goBackwardSp(2.2, 0.2);
+                pause(0.5);
+                turnLeft(1.2);//square up
                 pause(1);
-                goForwardSp(0.35,0.3); //need to move towards the box a bit
+                //goForwardSp(0.2,0.3); //need to move towards the box a bit
                 pause(0.5);
                 outtakeON();
-                pause(0.5);
-                goForwardSp(0.9,0.2);
-                goBackwardSp(0.6,0.2);
-                goForwardSp(0.9, 0.3);
-                goBackwardSp(0.5,0.3);
+                goBackwardSp(0.5,0.2);//release glyph and back away
+                pause(2);
                 outtakeOFF();
+                goForwardSp(2,0.2);//push glyph into pos
+                outtakeON();
+                goBackwardSp(0.75,0.2);
+                outtakeOFF();
+                goForwardSp(1, 0.2);
+                outtakeON();
+                goBackwardSp(0.3,0.2);
+                outtakeOFF();
+                raiseJewelTool();
+
             } else {
                 //red back
-                goBackwardSp(1.3, 0.3);
+                goBackwardSp(1.5, 0.2);
                 raiseJewelTool();
-                strafeRight(1.6);
+                strafeRight(1.4);
                 raiseJewelTool();
-                turnRight(2.6);
+                turnRight(2.6); //square up
                 pause(1);
-                goForwardSp(0.2, 0.2);
-                raiseJewelTool();
                 outtakeON();
-                raiseJewelTool();
-                goForwardSp(0.9,0.3);
-                goBackwardSp(0.6,0.3);
-                goForwardSp(0.9,0.3);
-                goBackwardSp(0.5,0.3);
+                pause(1);
+                goBackwardSp(0.5, 0.2);//release glyph and back away
                 outtakeOFF();
+                goForwardSp(2, 0.2);//push glyph into pos
+                outtakeON();
+                goBackwardSp(0.8,0.2);//back away
+                outtakeOFF();
+                goForwardSp(1,0.2);//push forward
+                outtakeON();
+                goBackwardSp(0.3,0.3);//back away
+                outtakeOFF();
+                raiseJewelTool();
             }
         } else {
             //we are blue
@@ -223,34 +242,56 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
 
     public void strafeLeft(double t) {
         // Step 1:  Drive forward for t seconds
-        robot.motorFL.setPower(-FORWARD_SPEED);robot.motorFR.setPower(FORWARD_SPEED);
-        robot.motorRL.setPower(FORWARD_SPEED);robot.motorRR.setPower(-FORWARD_SPEED);
+        double multiplier = 1;
+        if(is4947) {
+            multiplier = -1;
+        }
+        robot.motorFL.setPower(-FORWARD_SPEED * multiplier);
+        robot.motorFR.setPower(FORWARD_SPEED * multiplier);
+        robot.motorRL.setPower(FORWARD_SPEED * multiplier);
+        robot.motorRR.setPower(-FORWARD_SPEED * multiplier);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        robot.motorFL.setPower(0);robot.motorFR.setPower(0);
-        robot.motorRL.setPower(0);robot.motorRR.setPower(0);
+        robot.motorFL.setPower(0);
+        robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);
+        robot.motorRR.setPower(0);
     }
     
     public void strafeRight(double t) {
         // Step 1:  Drive forward for t seconds
-        robot.motorFL.setPower(FORWARD_SPEED);robot.motorFR.setPower(-FORWARD_SPEED);
-        robot.motorRL.setPower(-FORWARD_SPEED);robot.motorRR.setPower(FORWARD_SPEED);
+        double multiplier = 1;
+        if(is4947) {
+            multiplier = -1;
+        }
+        robot.motorFL.setPower(FORWARD_SPEED * multiplier);
+        robot.motorFR.setPower(-FORWARD_SPEED * multiplier);
+        robot.motorRL.setPower(-FORWARD_SPEED * multiplier);
+        robot.motorRR.setPower(FORWARD_SPEED * multiplier);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        robot.motorFL.setPower(0);robot.motorFR.setPower(0);
-        robot.motorRL.setPower(0);robot.motorRR.setPower(0);
+        robot.motorFL.setPower(0);
+        robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);
+        robot.motorRR.setPower(0);
     }
     
     public void goForward(double t) {
         // Step 1:  Drive forward for t seconds
-        robot.motorFL.setPower(FORWARD_SPEED);robot.motorFR.setPower(FORWARD_SPEED);
-        robot.motorRL.setPower(FORWARD_SPEED);robot.motorRR.setPower(FORWARD_SPEED);
+        double multiplier = 1;
+        if(is4947) {
+            multiplier = -1;
+        }
+        robot.motorFL.setPower(FORWARD_SPEED * multiplier);
+        robot.motorFR.setPower(FORWARD_SPEED * multiplier);
+        robot.motorRL.setPower(FORWARD_SPEED * multiplier);
+        robot.motorRR.setPower(FORWARD_SPEED * multiplier);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
@@ -262,6 +303,9 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
 
     public void goForwardSp(double t,double speed) {
         // Step 1:  Drive forward for t seconds
+        if(is4947) {
+            speed = -speed;
+        }
         robot.motorFL.setPower(speed);robot.motorFR.setPower(speed);
         robot.motorRL.setPower(speed);robot.motorRR.setPower(speed);
         runtime.reset();
@@ -275,20 +319,33 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
 
     public void goBackward(double t) {
         // Step 1:  Drive forward for t seconds
-        robot.motorFL.setPower(-FORWARD_SPEED);robot.motorFR.setPower(-FORWARD_SPEED);
-        robot.motorRL.setPower(-FORWARD_SPEED);robot.motorRR.setPower(-FORWARD_SPEED);
+        double multiplier = 1;
+        if(is4947) {
+            multiplier = -1;
+        }
+        robot.motorFL.setPower(-FORWARD_SPEED * multiplier);
+        robot.motorFR.setPower(-FORWARD_SPEED * multiplier);
+        robot.motorRL.setPower(-FORWARD_SPEED * multiplier);
+        robot.motorRR.setPower(-FORWARD_SPEED * multiplier);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        robot.motorFL.setPower(0);robot.motorFR.setPower(0);
-        robot.motorRL.setPower(0);robot.motorRR.setPower(0);
+        robot.motorFL.setPower(0);
+        robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);
+        robot.motorRR.setPower(0);
     }
     public void goBackwardSp(double t,double speed) {
         // Step 1:  Drive forward for t seconds
-        robot.motorFL.setPower(-speed);robot.motorFR.setPower(-speed);
-        robot.motorRL.setPower(-speed);robot.motorRR.setPower(-speed);
+        if(is4947) {
+            speed = -speed;
+        }
+        robot.motorFL.setPower(-speed);
+        robot.motorFR.setPower(-speed);
+        robot.motorRL.setPower(-speed);
+        robot.motorRR.setPower(-speed);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
@@ -301,29 +358,44 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
     }
     public void turnLeft(double t) {
         // Step 1:  Drive forward for t seconds
-
-        robot.motorFL.setPower(-FORWARD_SPEED);robot.motorFR.setPower(FORWARD_SPEED);
-        robot.motorRL.setPower(-FORWARD_SPEED);robot.motorRR.setPower(FORWARD_SPEED);
+        double multiplier = 1;
+        if(is4947) {
+            multiplier = -1;
+        }
+        robot.motorFL.setPower(-FORWARD_SPEED*multiplier);
+        robot.motorFR.setPower(FORWARD_SPEED*multiplier);
+        robot.motorRL.setPower(-FORWARD_SPEED*multiplier);
+        robot.motorRR.setPower(FORWARD_SPEED*multiplier);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        robot.motorFL.setPower(0);robot.motorFR.setPower(0);
-        robot.motorRL.setPower(0);robot.motorRR.setPower(0);
+        robot.motorFL.setPower(0);
+        robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);
+        robot.motorRR.setPower(0);
     }
 
     public void turnRight(double t) {
         // Step 1:  Drive forward for t seconds
-        robot.motorFL.setPower(FORWARD_SPEED);robot.motorFR.setPower(-FORWARD_SPEED);
-        robot.motorRL.setPower(FORWARD_SPEED);robot.motorRR.setPower(-FORWARD_SPEED);
+        double multiplier = 1;
+        if(is4947) {
+            multiplier = -1;
+        }
+        robot.motorFL.setPower(FORWARD_SPEED*multiplier);
+        robot.motorFR.setPower(-FORWARD_SPEED*multiplier);
+        robot.motorRL.setPower(FORWARD_SPEED*multiplier);
+        robot.motorRR.setPower(-FORWARD_SPEED*multiplier);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < t)) {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        robot.motorFL.setPower(0);robot.motorFR.setPower(0);
-        robot.motorRL.setPower(0);robot.motorRR.setPower(0);
+        robot.motorFL.setPower(0);
+        robot.motorFR.setPower(0);
+        robot.motorRL.setPower(0);
+        robot.motorRR.setPower(0);
     }
 
     public void intake(double t) {
