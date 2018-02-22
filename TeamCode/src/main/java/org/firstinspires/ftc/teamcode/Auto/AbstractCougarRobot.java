@@ -114,12 +114,12 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
                 goBackwardSp(2.2, 0.2);
                 pause(0.5);
                 turnLeft(1.2);//square up
-                pause(1);
-                //goForwardSp(0.2,0.3); //need to move towards the box a bit
+                pause(0.5);
+                goForwardSp(0.1,0.2); //need to move towards the box a bit
                 pause(0.5);
                 outtakeON();
                 goBackwardSp(0.5,0.2);//release glyph and back away
-                pause(2);
+                pause(1);
                 outtakeOFF();
                 goForwardSp(2,0.2);//push glyph into pos
                 outtakeON();
@@ -128,6 +128,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
                 goForwardSp(1, 0.2);
                 outtakeON();
                 goBackwardSp(0.3,0.2);
+                pause(2);
                 outtakeOFF();
                 raiseJewelTool();
 
@@ -150,6 +151,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
                 goForwardSp(1,0.2);//push forward
                 outtakeON();
                 goBackwardSp(0.3,0.3);//back away
+                pause(2);
                 outtakeOFF();
                 raiseJewelTool();
             }
@@ -157,28 +159,45 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
             //we are blue
             if(isFront) {
                 //we are blue front
-                goForward(1.1);
-                turnLeft(1.35);
+                goForwardSp(2.5, 0.2);
                 pause(0.5);
-                goBackwardSp(0.35, 0.3);
+                turnLeft(1.2);//square up
+                pause(1);
+                //goForwardSp(0.2,0.3); //need to move towards the box a bit
+                pause(0.5);
                 outtakeON();
-                goForwardSp(0.8,0.2);
-                goBackwardSp(0.4,0.2);
-                goForwardSp(0.8,0.2);
-                goBackwardSp(0.4,0.2);
+                goBackwardSp(0.5,0.2);//release glyph and back away
+                pause(2);
                 outtakeOFF();
+                goForwardSp(2,0.2);//push glyph into pos
+                outtakeON();
+                goBackwardSp(0.75,0.2);
+                outtakeOFF();
+                goForwardSp(1, 0.2);
+                outtakeON();
+                goBackwardSp(0.3,0.2);
+                pause(2);
+                outtakeOFF();
+                raiseJewelTool();
             } else {
                 //we are blue back
-                goForwardSp(1.3, 0.3);
-                strafeRight(1.6);
-                pause(0.5);
-                goForwardSp(0.4,0.2);
+                goForwardSp(1.5, 0.2);
+                strafeRight(1.4);
+                raiseJewelTool();
+                pause(1);
                 outtakeON();
-                goForwardSp(0.8,0.3);
-                goBackwardSp(0.3,0.3);;
-                goForwardSp(0.8,0.3);
-                goBackwardSp(0.4,0.3);;
+                pause(1);
+                goBackwardSp(0.5, 0.2);//release glyph and back away
                 outtakeOFF();
+                goForwardSp(2, 0.2);//push glyph into pos
+                outtakeON();
+                goBackwardSp(0.8,0.2);//back away
+                outtakeOFF();
+                goForwardSp(1,0.2);//push forward
+                outtakeON();
+                goBackwardSp(0.3,0.3);//back away
+                outtakeOFF();
+                raiseJewelTool();
             }
         }
     }
@@ -242,7 +261,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
 
     public void strafeLeft(double t) {
         // Step 1:  Drive forward for t seconds
-        double multiplier = 1;
+        double multiplier = 0.9;
         if(is4947) {
             multiplier = -1;
         }
@@ -263,7 +282,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
     
     public void strafeRight(double t) {
         // Step 1:  Drive forward for t seconds
-        double multiplier = 1;
+        double multiplier = 0.9;
         if(is4947) {
             multiplier = -1;
         }
@@ -358,7 +377,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
     }
     public void turnLeft(double t) {
         // Step 1:  Drive forward for t seconds
-        double multiplier = 1;
+        double multiplier = .95;
         if(is4947) {
             multiplier = -1;
         }
@@ -379,7 +398,7 @@ public abstract class AbstractCougarRobot extends LinearOpMode {
 
     public void turnRight(double t) {
         // Step 1:  Drive forward for t seconds
-        double multiplier = 1;
+        double multiplier = 0.9;
         if(is4947) {
             multiplier = -1;
         }

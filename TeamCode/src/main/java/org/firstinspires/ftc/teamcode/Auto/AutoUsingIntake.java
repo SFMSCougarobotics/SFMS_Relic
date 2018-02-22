@@ -3,14 +3,17 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 
-@Autonomous(name="AutoOption", group="Auto")
+@Autonomous(name="AutoUsingIntake", group="Auto")
 
-public class AutoOption extends AbstractCougarRobot {
+public class AutoUsingIntake extends AbstractCougarRobot {
     public AutoCougarRobot cougar = new AutoCougarRobot();
     
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+        robot.useIntakeDuringAutonomous = true;
+        String team = "4947";
+
         double swipePosition = robot.swipecenter;
         while (! isStarted()) {
 
@@ -27,25 +30,36 @@ public class AutoOption extends AbstractCougarRobot {
                 isFront = ! isFront;
                 while(gamepad1.y) {
                     //wait here for the button to be released
-                    telemetry.addData("Alliance (a)", isFront ? "FRONT" : "BACK");
+                    telemetry.addData("Position (y)", isFront ? "FRONT" : "BACK");
                     telemetry.update();
                 }
             }
             if(gamepad1.x) {
-                swipePosition += 0.0001;
+                is4947 = !is4947;
+                is5498 = !is5498;
+                if(is4947) {
+                    team = "4947";
+                } else {
+                    team = "5498";
+                }
+                while(gamepad1.x) {
+                    //wait here for the button to be released
+                    telemetry.addData("Team (x)", team);
+                    telemetry.update();
+                }
             }
             if(gamepad1.b) {
-                swipePosition -= 0.0001;
+                //swipePosition -= 0.0001;
             }
-            telemetry.addData("swipePos",swipePosition);
+            robot.swipe.setPosition(swipePosition);
             telemetry.addData("Alliance (a)", isRed ?   "RED"   : "BLUE");
             telemetry.addData("Position (y)", isFront ? "FRONT" : "BACK");
+            telemetry.addData("Team (x)", team);
             //telemetry.addData("Time", getRuntime());
             telemetry.update();
         }
 
         waitForStart();
-        robot.swipe.setPosition(swipePosition);
         cougar.go(this);
     }
 }
